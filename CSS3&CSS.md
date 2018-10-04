@@ -940,3 +940,67 @@ a:after {
   color:#f00;
 }
 ```
+## 经典布局
+#### 三栏布局：左右浮动+中间静态布局
++ middle必须放在left和right之后
++ 左边栏向左浮动，右边栏向右浮动，middle设置左右margin值。
+
+#### 双飞翼布局
++ middle必须放在left和right之前
++ 中间栏的容器设置向左浮动和宽度width百分百
++ 左边栏向左浮动，margin-left为-100%，右边栏也向左浮动，margin-left为边栏的宽度。
++ 中间栏设置左右margin值即可。
+
+#### 页面页脚+中间两栏布局
++ main主栏要写在aside边栏前面
++ 边栏的样式设置,相对定位，向左浮动，设置width，left值和margin-left值：
+```
+aside{
+  position: relative;
+  left:-210px;
+  float: left;
+  width:200px;
+  margin-left: -100%;
+}
+```
++ 主栏设置向左浮动，width百分百。
+```
+main{
+    float:left;
+    width:100%;
+```
++ 页脚设置`clear:both;`
+
+#### 页眉页脚+中间三栏布局
+###### 要点如下：
++ `body{text-align:center};`
++ 中间三栏内容区的container设置clearfix的class样式
+```
+.clearfix:after {  /*设置父元素高度自适应*/
+    content: "";
+    clear: both;
+    display: block;
+    visibility: hidden;
+}
+```
++ midContainer为只包含middle的父元素。设置左中右三个容器都左浮动，但是左右边栏的margin-left不一样，中间的最内层元素设置左右margin，为边栏腾出空间。
+```
+#midContainer {
+    width: 100%;  /*自适应窗口大小*/
+    float: left;
+}
+#middle {
+    margin: 0 150px; /*为左右栏腾出空间*/
+}
+#left {
+    float: left;
+    width: 150px;
+    margin-left: -100%;
+}
+#right {
+    float: left;
+    width: 150px;
+    margin-left: -150px
+}
+```
++ 页眉页脚和中间三栏的大容器，都设置一个warp的class样式，三个都设置`margin:0 auto;`
