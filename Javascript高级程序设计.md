@@ -684,7 +684,121 @@ sayColor.bind(o)();
 + call和apply都是对函数的直接调用，而bind方法返回的仍然是一个函数，因此后面还需要()来进行调用才可以。
 ---
 
-#
+####  闭包
++ 概念：闭包是指有权访问另一函数作用域中的变量的函数。
++ 闭包的特性：它们可以捕捉到局部变量（和参数），并一直保存下来。
++ 创建的常用方式：在一个函数内部创建另一个函数
+```
+function createComparisonFunction(propertyName){
+    return function(object1,object2){
+        var value1 = object1[propertyName1];
+        var value2 = object2[propertyName2];
+        
+        if(value1 < value2){
+            return -1;
+        } else if (value1 > value2){
+            return 1;
+        } else {
+            return 0;
+        }
+    
+    };
+}
+//这里的内部函数是一个匿名函数。整个是一个闭包。
+```
+```
+var scope = "global scope";
+function checkScope() {
+    var scope = "local scope";
+    function f() {
+        return scope;
+    }
+    return f;
+}
+checkScope()();  //local scope
+```
++ remember词法作用域的基础规则：函数被执行时（executed)使用的作用域链是被定义时的作用域链。
++ 闭包的神奇特性：闭包可以捕获到局部变量和参数的外部函数绑定，即便外部函数的调用已经结束。
++ 缺点：由于闭包会携带包含它的函数的作用域，因此比其他函数占用更多的内存，过度使用闭包可能会导致内存占用过多，建议只在绝对必要时考虑闭包。
++ 闭包与变量：闭包只能取得包含函数中任何变量的最后一个值。
+```
+function createFunction(){
+    var result = new Array();
+    
+    for (var i=0; i < 10;i++){
+        result[i] = function(num){
+            return function(){//匿名函数
+                return num;
+            };
+        }(i);
+    }
+    return result;
+}
+/* return[i]=function(num){}(i)   这里，num表示函数的定义的参数，i表示实际传入的参数。
+没有直接把闭包赋值给数组，而是定义了一个匿名函数，并将立即执行该匿名函数的结果赋给数组。
+*/ 
+```
++ 关于this对象画重点：==匿名函数的执行环境具有全局性==，因此其this对象通常指向window。
+```
+var name = "The Window";
+
+var object = {
+    name : "My Object",
+    
+    getNameFunc : function(){
+        return function(){
+            return this.name;
+        };
+    }
+};
+
+alert(object.getNameFunc()());//"The Window"(在非严格模式下)
+```
+由于getNameFunc()返回一个函数，因此调用object.getNameFunc()()就会立即调用它返回的函数，结果就是返回一个字符串。
+
+不过，把外部作用域中的this对象保存在一个闭包能够访问到的变量(下面的例子是that)里，就可以让闭包访问该对象了。
+```
+var name = "The Window";
+
+var object = {
+    name : "My Object",
+    
+    getNameFunc : function(){
+        var that = this;
+        return function(){
+            return that.name;
+        };
+    }
+    getName: function(){//简单地返回的例子
+        return this.name;
+    }
+};
+
+alert(object.getNameFunc()());//"My Object"
+object.getName();//"My Object"
+```
++ 如果想访问作用域中的==arguments==对象，必须将对该对象的引用保存到另一个闭包能够访问的变量中。
+
+IE中存在的特殊问题：如果闭包的作用域链中保存着一个HTML元素，呢么就意味着该元素无法被销毁。
+```
+function assignHandler(){
+    var element = document.getElementById("someElement");
+    var id = element.id;
+    element.onclick = function(){
+        alert(id);
+    }；
+    element = null;
+}
+```
+以上代码创建了一个作为element元素事件处理程序的闭包，而这个闭包则又创建了一个循环引用，由于匿名函数保存了一个对assignHandler（）的活动对象的引用，因此将会导致无法减少element的引用数，只要匿名函数存在，element的引用数至少也是1，因此它所占用的内存就永远无法被回收，
+
+必须记住：闭包会引用包含函数的整个活动对象，而其中包含着element，即使闭包不直接引用element，包含函数的活动对象也仍然会保存一个引用，设置为null就能够解除对DOM对象的引用，顺利的减少其引用数，确保正常回收其占用的内存。
+
+每次调用JS函数时，都会为之创建一个新的对象用来保存局部变量，把这个对象添加至作用域链中。当函数返回的时候，就从作用域链中将这个绑定变量的对象删除。如果不存在嵌套的函数，也没有其他引用指向这个绑定对象，他就会被当做垃圾回收掉。如果定义了嵌套的函数，每个嵌套的函数都各自对应一个作用域链，并且这个作用域链指向一个变量绑定对象。但如果这些嵌套的函数对象在外部函数中保存下来，
+###### 闭包的使用场景
++ 通过循环给页面上多个DOM节点绑定事件
++ 将一些不希望暴露在全局的变量封装成“私有变量”
++ 延续局部变量的寿命
 
 #### 5.6.3 String类型
 + `var stringObject = new String("hello world")`
