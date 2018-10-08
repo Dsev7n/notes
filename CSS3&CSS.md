@@ -1,3 +1,62 @@
+### BFC的形成条件和特性分析
++ 原文链接：https://www.jianshu.com/p/8858828987be
++ BFC（Block formatting contexts），翻译过来就是块级格式化上下文，指的是一种上下文环境。
++ 如何形成BFC？根据W3C的定义，以下这些元素就会为他们的内容创建一个BFC：
+    + 浮动元素
+    + 绝对定位元素
+    + 非块级盒子的块级容器（例如inline-blocks，table-cells，and table-captions）
+    + overflow属性值不是“visible”（visible是overflow的默认值）的块级盒子（视口除外）
++ BFC的特点：
+    + 在一个BFC中，垂直方向上，盒子是从包含块顶部开始一个挨着一个布局的，两个相邻的盒子的垂直距离是由margin属性决定的，在一个BFC中的两个相邻的块级盒子的垂直外边距会产生塌陷。
+    + 在一个BFC中，水平方向上，==每个盒子的左边缘都会接触包含块的左边缘==（从右向左的格式则相反）。除非出现浮动元素和其他元素相互作用的情况（当有浮动元素时，行盒可能因浮动元素而收缩，如果有盒子形成了新的BFC，那这个盒子也可能因浮动元素而变窄）。
+    + BFC内部的子元素之间可以形成外边距塌陷，但BFC元素和其他块级元素是不能形成外边距塌陷的。
+##### BFC的应用：
++ 1.清除元素之间的影响:eg我们都知道文本会围绕着浮动元素布局，如果我们不想让文本环绕，只想让文本位于右侧，只需要在文本外套一层元素，并且把这个元素变成BFC。如下例子，只需给inner设置`overflow:auto;`即可。
+```
+<div class="out">
+    <div class="f"></div><div class="inner">我是文本我是文本我是文本我是文本我是文本我是文本我是文本
+我是文本我是文本我是文本我是文本我是文本我是文本我是文本我是文本我是文本</div></div>
+```
++ 2.清除内部浮动元素对父级元素的影响：以下html代码会让浮动的子元素撑出父元素，父元素只会显示成一条直线，要想让父元素包含子元素，只需给父元素设置`overflow:auto;`
+```
+<div class="out">
+    <div class="f"></div>
+</div>
+```
++ 3.创建自适应布局：如果我们想创建一个两列布局，其中左侧宽度不定，右侧宽度自适应占用剩下的空间，有一种方法就是利用浮动元素和BFC元素的相互作用实现的。
+```
+HTML
+<div class="out">
+    <div class="f">浮动元素</div>
+    <div class="r"></div>
+</div>
+
+
+
+CSS
+<style type="text/css">
+    html,body{
+            width: 100%;
+            height: 100%;
+    }
+        .out{
+            background: blue;
+            width: 100%;
+            height: 100%;
+        }
+        .f{
+            float: left;
+            margin-right: 20px;
+            height: 100%;
+            background: red;
+        }
+        .r{
+            overflow: auto;
+            height: 100%;
+            background: yellow;
+        }
+    </style>
+```
 ### display属性
 + 可能的值：
     + inline:默认。此元素会被显示为内联元素，元素前后没有换行符。
