@@ -170,6 +170,11 @@ transition: width 2s;
 5. 通配选择器对特殊性没有贡献，为0
 + 属性选择器：http://www.w3school.com.cn/css/css_syntax_attribute_selector.asp
 
+#### 浏览器兼容
++ －o－：以Presto为渲染引擎的浏览Opera的私有属性、　
++ －moz－：以Gecko为渲染引擎的浏览器Mozilla　Firefox的私有属性　
++ －webkit－：以Webkit为渲染引擎的浏览器Safari、Google　Chrome的私有属性
++ －ms－：IE8的私有属性的transition：CSS3的过度效果
 ---
 # 慕课网《十天精通CSS3》
 + CSS3把很多以前需要使用图片和脚本来实现的效果、甚至动画效果，只需要短短几行代码就能搞定。比如圆角，图片边框，文字阴影和盒阴影，过渡、动画等。
