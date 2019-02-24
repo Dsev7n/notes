@@ -1613,6 +1613,16 @@ const promise = new Promise(function(resolve,reject){
     
 }
 ```
++ resolve函数的作用是，在异步操作成功时调用，并将异步操作的结果，作为参数传递出去；reject函数的作用是，在异步操作失败时调用，并将异步操作报出的错误，作为参数传递出去。传递出去的意思就是，传到promise对象里面，所以在then和catch里，如上例子中,value和error都可以作为变量被使用。
++ Promise实例生成以后，可以用then方法分别指定resolved状态和rejected状态的回调函数。then方法可以接受两个回调函数作为参数。第一个回调函数是Promise对象的状态变为resolved时调用，第二个回调函数是Promise对象的状态变为rejected时调用。其中，第二个函数是可选的，不一定要提供。这两个函数都接受Promise对象传出的值作为参数。
++ 一般总是建议，Promise 对象后面要跟catch方法，这样可以处理 Promise 内部发生的错误。catch方法返回的还是一个 Promise 对象，因此后面还可以接着调用then方法。Promise 对象的错误具有“冒泡”性质，会一直向后传递，直到被捕获为止。也就是说，错误总是会被下一个catch语句捕获。因此，建议总是使用catch方法，而不使用then方法的第二个参数。理由是这种写法可以捕获前面then方法执行中的错误。
+```
+promise.then(function(value) {
+  // success
+}, function(error) {
+  // failure
+});
+```
 + 参考博客：
     + 1.大白话讲解Promise（一）https://www.cnblogs.com/lvdabao/p/es6-promise-1.html
 + Promise是一个构造函数，自己身上有all、reject、resolve这几个眼熟的方法，原型上有then、catch等同样很眼熟的方法。
