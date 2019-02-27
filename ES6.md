@@ -425,7 +425,76 @@ var sum = function(num1, num2) {
 + 箭头函数里的`this`绑定定义时所在的作用域，而普通函数的`this`指向运行时所在的作用域。
 + this指向的固定化，并不是因为箭头函数内部有绑定this的机制，实际原因是箭头函数根本没有自己的this，导致==内部的this就是外层代码块的this==。正是因为它没有this，所以也就不能用作构造函数。
 + 除了`this`，以下三个变量在箭头函数之中也是不存在的，指向外层函数的对应变量：`arguments`、`super`、`new.target`。
++ 箭头函数可以让setTimeout里面的this，绑定定义时所在的作用域，而不是指向运行时所在的作用域（全局作用域）。setTimeout超时调用的代码都是在全局作用域中执行的，因此函数中this的值在非严格模式下指向window对象，在严格模式下是undefined。下面是另一个例子。
+```
+function Timer() {
+  this.s1 = 0;
+  this.s2 = 0;
+  // 箭头函数
+  setInterval(() => this.s1++, 1000);  
+  // 普通函数
+  setInterval(function () {
+    this.s2++;
+  }, 1000);
+}
+//在定义时的作用域(即Timer函数）里，s1和s2都是3
+//但是在创建的新实例的作用域里面（即全局对象），s1和s2没有被加过，因为还没有来得及调用两个间歇调用函数，都是0
+var timer = new Timer();
 
+setTimeout(() => console.log('s1: ', timer.s1), 3100);
+setTimeout(() => console.log('s2: ', timer.s2), 3100);
+// s1: 3
+// s2: 0
+```
++ 箭头函数可以让this指向固定化，这种特性很有利于==封装回调函数==。下面是一个例子，DOM 事件的回调函数封装在一个对象里面。
+```
+var handler = {
+  id: '123456',
+
+  init: function() {
+    document.addEventListener('click',
+      event => this.doSomething(event.type), false);
+  },
+
+  doSomething: function(type) {
+    console.log('Handling ' + type  + ' for ' + this.id);
+  }
+};
+```
++ 上面代码的init方法中，使用了箭头函数，这导致这个箭头函数里面的this，总是指向handler对象。如果使用的是普通函数，回调函数运行时，this.doSomething这一行会报错，因为==此时this指向document对象==。
++ 由于箭头函数没有自己的this，所以当然也就不能用call()、apply()、bind()这些方法去改变this的指向。（或许可以把箭头函数看成一段代码，而不是一个函数，这样当然就没有this指向外层的函数）
+```
+(function() {
+  return [
+    (() => this.x).bind({ x: 'inner' })()
+  ];
+}).call({ x: 'outer' });
+// ['outer']
+```
+##### 箭头函数的适用场景
++ 箭头函数适合于无复杂逻辑或者无副作用的纯函数场景下，例如：用在 map、reduce、filter 的回调函数定义中
+
+##### 不适用场合
++ 第一个场合是定义对象的方法，且该方法内部包括this。
+```
+//这是一个对象，所以定义时this指向全局作用域
+const cat = {
+  lives: 9,
+  jumps: () => {
+    this.lives--;
+  }
+}
+```
+调用cat.jumps()时，如果是普通函数，该方法内部的this指向cat；如果写成上面那样的箭头函数，使得this指向全局对象，因此不会得到预期结果。
++ 第二个场合是需要动态this的回调函数的时候，也不应使用箭头函数。
+```
+var button = document.getElementById('press');
+button.addEventListener('click', () => {
+  this.classList.toggle('on');
+});
+```
+上面代码运行时，点击按钮会报错，因为button的监听函数是一个箭头函数，导致里面的this就是全局对象。如果改成普通函数，this就会动态指向被点击的按钮对象。
++ 另外，如果函数体很复杂，有许多行，或者函数内部有大量的读写操作，不单纯是为了计算值，这时也不应该使用箭头函数，而是要使用普通函数，这样可以提高代码可读性。
 
 #### 7.6 双冒号运算符
 + 函数绑定运算符是并排的两个冒号`::`，双冒号左边是一个对象，右边是一个函数。该运算符会自动将左边的对象，作为上下文环境（即`this`对象），绑定到右边的函数上面。
