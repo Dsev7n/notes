@@ -2125,6 +2125,21 @@ EventUtil.addHandler(window, "load", function(){
 });
 ```
 在这个例子中，我们想在window完全加载完毕后再向DOM中添加一个新图片，等图片加载完毕后再添加到页面中。所以首先为window指定onload事件处理程序，再创建一个新图像元素，并设置了其onload事件处理程序，最后又将这个图像添加到页面中，还设置了他的src属性。这里有一点需要格外注意：新图像元素不一定要添加到文档后才开始下载，只要设置了src属性就会开始下载。
++ 还有一些元素也以非标准的方式支持load事件。在IE9+及更高版本中，<script>元素也会触发load事件，以便开发人员确定动态加载的JS文件是否加载完毕。与图像不同，只有在设置了<script>元素的src属性并将该元素添加到文档后，才会开始下载JS文件。换句话说，对于<script>元素而言，指定src属性和指定事件处理程序的先后顺序就不重要了。以下代码展示了怎样为<script>元素指定事件处理程序。
+```
+//EventUtil对象为本书中定义的跨浏览器事件对象，定义在13.3.3
+//这个addHanler方法时封装了DOM中的addEventListener方法，和IE中的attachEvent方法，
+//和原本的用法有些许不一样，原本这两个方法时直接定义在DOM元素中的。
+EventUtil.addHandler(window, "load", function() {
+    var script = document.createElement("script");
+    EventUtil.addHandler(script, "load", function(event){
+        alert("loaded");
+    });
+    script.src = "example.js";
+    document.body.appendChild("script");
+    
+});
+```
 ##### sroll事件
 + 虽然sroll事件时在window对象上发生的，但它实际表示的则是页面中相应元素的变化。在混杂模式下，可以通过<body>元素的scrollLeft和scrollTop来监控到这一变化；而在标准模式下，除Safari之外的浏览器都会通过<html>元素来反映这一变化（Safari仍然基于<body>跟踪滚动位置）
 ```
@@ -2218,20 +2233,21 @@ EventUtil.addHandler(div, "click", function(){
 ##### 5.相关元素
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#### 13.4.7 HTML5事件
+##### 3.DOMContentLoaded
++ window的load事件会在页面中的一切都加载完毕后触发，而DOMContentLoaded事件则在形成完整的DOM树之后就会触发，不理会图像、JavaScript文件、CSS文件或其他资源是否已经加载完毕。与load事件不同，DOMContentLoaded支持在页面下载的早期添加事件处理程序，这也意味着用户能够尽早地与页面进行交互。
++ 要处理DOMContentLoaded事件，可以为document或window添加相应的事件处理程序（尽管这个事件会冒泡到window，但它的目标实际上是document）。
+```
+EventUtil.addHandler(document, "DOMContentLoaded", function(event) {
+    alert("Content loaded");
+});
+```
++ 通常这个事件既可以添加事件处理程序，也可以执行其他DOM操作，这个事件始终都会在load事件之前触发。对于不支持DOMContentLoaded的浏览器，我么建议在页面加载期间设置一个时间为0毫秒的超时调用，为了确保这个方法有效，必须将其作为页面中的第一个超时调用；即便如此，也还是无法保证在所有环境中该超时调用一定会早于load事件被触发，如下：
+```
+setTimeout(function()) {
+    //在此添加事件处理程序
+}, 0);
+```
 
 ## 13.5 内存和性能
 + 在JS中，添加到页面上的事件处理程序数量将直接关系到页面的整体运行性能。原因：1.每个函数都是对象，都会占用内存；内存中的对象越多，性能就越差。2. 必须事先制定所有处理程而导致的DOM访问次数，会延迟整个页面的交互就绪时间。
