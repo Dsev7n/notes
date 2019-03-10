@@ -56,3 +56,65 @@
 <br>、<hr>、<img>、<input>、<link>、<meta>
 ```
 ---
+###  <meta>标签
+> 原文链接：https://www.cnblogs.com/wangyang108/p/5995379.html
+
++ <meta> 标签提供了HTML文档的==元数据==。元数据不会显示在客户端，但是会被浏览器解析。META元素通常用于指定网页的描述，关键词，文件的最后修改时间，作者及其他元数据。元数据通常以 名称/值 对出现。
++ 元数据可以被使用浏览器（如何显示内容或重新加载页面），搜索引擎（关键词），或其他 Web 服务调用。
++ **<meta> 标签永远位于 head 元素内部**。在 HTML 中 <meta> 标签没有结束标签。
++ meta标签共有两个属性，分别是http-equiv属性和name属性。
+##### 1.name属性
++ name属性主要用于描述网页，比如网页的关键词，叙述等。与之对应的属性值为content，content中的内容是对name填入类型的具体描述，便于搜索引擎抓取。meta标签中name属性语法格式是：
+```
+<meta name="参数" content="具体的描述">。
+```
++ 其中name属性共有以下几种参数。
+    1. keywords(关键字)
+    2. description(网站内容的描述)
+    3. viewport(移动端的窗口):这个属性常用于设计移动端网页。
+    4. robots(定义搜索引擎爬虫的索引方式):robots用来告诉爬虫哪些页面需要索引，哪些页面不需要索引。content的参数有all,none,index,noindex,follow,nofollow。默认是all。
+        1. none : 搜索引擎将忽略此网页，等价于noindex，nofollow。
+        2. noindex : 搜索引擎不索引此网页。
+        3. nofollow: 搜索引擎不继续通过此网页的链接索引搜索其它的网页。
+        4.all : 搜索引擎将索引此网页与继续通过此网页的链接索引，等价于index，follow。
+        5. index : 搜索引擎索引此网页。
+        6. follow : 搜索引擎继续通过此网页的链接索引搜索其它的网页。
+        7. author(作者)
+        8.  copyright(版权)
+        9.  revisit-after(搜索引擎爬虫重访时间): 如果页面不是经常更新，为了减轻搜索引擎爬虫对服务器带来的压力，可以设置一个爬虫的重访时间。如果重访时间过短，爬虫将按它们定义的默认时间来访问。举例：
+
+
+```
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="none">
+<meta name="copyright" content="Lxxyx"> //代表该网站为Lxxyx个人版权所有。
+<meta name="revisit-after" content="7 days" >
+```
+##### 2.  http-equiv属性
++ 使用带有 http-equiv 属性的 <meta> 标签时，服务器将把名称/值对添加到发送给浏览器的内容头部。meta标签中http-equiv属性语法格式是：
+```
+<meta http-equiv="参数" content="具体的描述">
+```
++ 其中http-equiv属性主要有以下几种参数：
+    1.  content-Type(设定网页字符集)(推荐使用HTML5的方式) : 用于设定网页字符集，便于浏览器解析与渲染页面
+    2. X-UA-Compatible(浏览器采取何种版本渲染当前页面): 用于告知浏览器以何种版本来渲染页面。（一般都设置为最新模式)
+    3. cache-control(指定请求和响应遵循的缓存机制)
+    4. expires(网页到期时间)
+    5. refresh(自动刷新并指向某页面): 网页将在设定的时间内，自动刷新并调向设定的网址。
+    6.  Set-Cookie
+```
+<meta http-equiv="content-Type" content="text/html;charset=utf-8">  //旧的HTML，不推荐
+
+<meta charset="utf-8"> //HTML5设定网页字符集的方式，推荐使用UTF-8
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/> //指定IE和Chrome使用最新版本渲染当前页面
+
+<meta http-equiv="cache-control" content="no-cache">
+
+<meta http-equiv="expires" content="Sunday 26 October 2016 01:00 GMT" />
+
+
+<meta http-equiv="refresh" content="2；URL=http://www.lxxyx.win/"> //意思是2秒后跳转向我的博客
+
+<meta http-equiv="Set-Cookie" content="User=Lxxyx; path=/; expires=Sunday, 10-Jan-16 10:00:00 GMT"> //具体范例
+```
