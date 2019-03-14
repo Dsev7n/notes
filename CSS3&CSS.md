@@ -1,5 +1,7 @@
 ### BFC的形成条件和特性分析
-+ 原文链接：https://www.jianshu.com/p/8858828987be
+> + 原文链接：https://www.jianshu.com/p/8858828987be
+> + 原文: https://www.w3cplus.com/css/understanding-bfc-and-margin-collapse.html © w3cplus.com
+
 + BFC（Block formatting contexts），翻译过来就是块级格式化上下文，指的是一种上下文环境。
 + 如何形成BFC？根据W3C的定义，以下这些元素就会为他们的内容创建一个BFC：
     + 浮动元素
