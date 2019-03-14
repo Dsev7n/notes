@@ -437,8 +437,43 @@ ETag：W/"usggi-1235"   //弱
 
 #### 8.5.1 认证多半为基于表单认证
 + 由于使用上的便利性即安全性问题，HTTP协议标准提供的BASIC认证和DIGEST认证几乎不怎么使用。另外，SSL客户端认证虽然具有高度的安全等级，但因为导入及维持费用等问题，还尚未普及。
+## 第9章 基于HTTP的功能追加协议
+### 9.3 使用浏览器进行全双工通信的websocket
+#### 9.3.1 websocket的设计与功能
++ 仍在开发中的WebSocket技术主要是为了解决Ajax和Comet里XHR附带的缺陷所引起的问题。
+#### 9.3.2 WebSocket协议
++ 由于建立在HTTP基础上的协议，因此连接的发起方仍是客户端，而一旦确立WebSocket通信连接，不论服务器还是客户端，任意一方都可直接向对方发送报文。
++ WebSocket协议的主要特点：
+    + **推送功能**：服务器可直接发送数据，而不必等待客户端的请求。
+    + **减少通信量**：只要建立起WebSocket连接，就希望一直保持连接状态。和HTTP相比，不但每次连接时的总开销减少，而且由于WebSocket的首部信息很小，通信量也相应减少了。
++ 为了实现WebSocket通信，在HTTP连接建立之后，需要完成一次“握手”的步骤：
+##### 握手·请求
++ 为了实现WebSocket通信，需要用到HTTP的Upgrade首部字段，告知服务器通信协议发生改变。`Sec-WebSocket-Key`字段内记录着握手过程中共必不可少的键值，`Sec-WebSocket-Protocol`字段内记录使用的子协议。按WebSocket的标准，子协议在连接分开使用时，定义哪些连接的名称。
 
+![image](https://wx4.sinaimg.cn/mw690/005PH614ly1g124revxc3j30ca05gta1.jpg)
 
+##### 握手·响应
++ 对于之前的请求，返回状态码101 Switching Protocols的响应。
++ `Sec-WebSocket-Accept`的字段值是由握手请求中的`Sec-WebSocket-Key`的字段值生成的。
+
+![image](https://wx2.sinaimg.cn/mw690/005PH614ly1g124y080s3j30ei09rq4e.jpg)
+
++ 成功确立WebSocket连接之后，通信时不再使用HTTP的数据帧，而采用WebSocket独立的数据帧。
+
+![image](https://wx4.sinaimg.cn/mw690/005PH614ly1g125032lz5j30fc0b2q5j.jpg)
+
+##### WebSocket API
++ 以下为调用WebSocket API,每50ms发送一次数据的实例：
+```
+var socket = new WebSocket('ws://game.example.com:12010/updates');
+socket.onopen = function() {
+    setInterval(function(){
+        if (socket.bufferedAmount == 0) {
+            socket.send(getUpdateData());
+        }
+    },50);
+};
+```
 ## 从输入url到页面展示到底发生了什么
 > + 参考链接:
 > + https://www.jianshu.com/p/23b388f8e5aa
