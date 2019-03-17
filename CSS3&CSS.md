@@ -1085,6 +1085,75 @@ main{
 #### 三栏布局：左右浮动+中间静态布局
 + middle必须放在left和right之后
 + 左边栏向左浮动，右边栏向右浮动，设置各自的width, middle设置左右margin值。
+##### 两栏浮动布局和圣杯布局类比记忆
++ 顺序：主栏都要写在边栏前面
++ 浮动：主栏和边栏全都向左浮动
++ 容器内边距：都要设置container的左右padding
++ margin:左边栏设置margin-left:-100%, 右边栏设置margin-left:[负的边栏宽度]。
++ width:主栏（中间栏）设置width:100%, 边栏设置实际宽度。
++ 相对定位：左右边栏都要相对定位，如果是左边栏，设置left:[负的左边栏宽度]，如果是右边栏，设置right：[负的右边栏宽度]。
+
+##### 圣杯布局和双飞翼布局对比记忆
++ 顺序：主栏都要写在边栏前面
++ 浮动：主栏和边栏全都向左浮动
++ 容器内边距：圣杯要设置container的左右padding，双飞翼不用设置container
++ margin:
+    + 相同点：左边栏设置margin-left:-100%, 右边栏设置margin-left:[负的边栏宽度]。
+    + 不同点：双飞翼中间栏要设置左右margin, 圣杯不用
++ width:主栏（中间栏）设置width:100%, 边栏设置实际宽度。
++ 相对定位：
+    + 圣杯布局，左右边栏都要相对定位，左边栏设置left:[负的左边栏宽度]，右边栏设置right：[负的右边栏宽度]。
+    + 双飞翼布局不用定位。
+
+##### 主栏静态，边栏浮动的两栏/三栏布局类比记忆
++ 顺序：主栏都要写在边栏后面（两栏布局中主栏是在右边的）
++ 浮动：左边栏向左浮动，右边栏向右浮动
++ width:主栏不用设置宽度，边栏设置实际宽度
++ margin:主栏设置左右margin, 边栏不用设置 
+
+#### 圣杯布局
+> 参考链接：https://www.cnblogs.com/imwtr/p/4441741.html
+
++ 要点：
+    +  middle部分首先要放在container的最前部分。然后是left,right
+    + 将三栏都 float:left , 再加上一个position:relative 
+    + middle部分 width:100%占满
+    + 在外围container加上 padding:0 220px 0 200px
+    + 左边栏设置margin-left:-100%和 left:-200px。
+    + 右边栏相对定位 right:-220px
+    + 如果想container高度保持一致可以给left middle right都加上min-height:130px
+    + 为了保证窗口不能缩太小无法展示左右，可以给body加上 min-width
+```
+ .left,
+    .middle,
+    .right{ 
+        position: relative;
+        float: left;
+        min-height: 130px;
+    }
+    .container{
+        padding:0 220px 0 200px;
+        overflow: hidden;
+    }
+    .left{
+        margin-left: -100%;
+        left: -200px;
+        width: 200px;
+        background: red;
+    }
+    .right{
+        margin-left: -220px;
+        right: -220px;
+        width: 220px;
+        background: green;
+    }
+    .middle{ 
+        width: 100%;
+        background: blue;
+        word-break: break-all;
+
+    }
+```
 ---
 ## rem和em
 + rem是基于html元素的字体（font-size)大小来决定
