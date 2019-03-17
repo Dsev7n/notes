@@ -1019,40 +1019,41 @@ a:after {
 }
 ```
 ## 经典布局
-#### 三栏布局：左右浮动+中间静态布局
-+ middle必须放在left和right之后
-+ 左边栏向左浮动，右边栏向右浮动，middle设置左右margin值。
-
-#### 双飞翼布局
-+ middle必须放在left和right之前
-+ 中间栏的容器设置向左浮动和宽度width百分百
-+ 左边栏向左浮动，margin-left为-100%，右边栏也向左浮动，margin-left为边栏的宽度。
-+ 中间栏设置左右margin值即可。
-
-#### 页面页脚+中间两栏布局
+#### 页面页脚+中间两栏布局（这个例子的边栏是在左边的）
 + main主栏要写在aside边栏前面
++ 写一个叫content的div，包含main和aside,设置content的padding-left为边栏宽度;
 + 边栏的样式设置,相对定位，向左浮动，设置width，left值和margin-left值：
 ```
+content{
+    padding-left:210px;
+}
+
 aside{
   position: relative;
-  left:-210px;
+  left:-210px;   //因为父元素设置了padding，只有设置相对定位再设置left才能移到左边
   float: left;
-  width:200px;
-  margin-left: -100%;
+  width:210px;
+  margin-left: -100%;   //由于main写在aside前，这行代码使aside从下面一行移到跟main同一行
 }
 ```
 + 主栏设置向左浮动，width百分百。
 ```
 main{
     float:left;
-    width:100%;
+    width:100%;  //这个百分百很重要，如果没有设置那就乱套了
 ```
 + 页脚设置`clear:both;`
 
-#### 页眉页脚+中间三栏布局
+##### 中间两栏还有另一种很简单的写法
++ 要点：
+    + main放在aside后面
+    + 不设置content的包含块
+    + aside向左浮动，设置具体的width，
+    + mian设置margin-left为width，width也要设为具体值
+
+#### 页眉页脚+双飞翼布局
 ###### 要点如下：
-+ `body{text-align:center};`
-+ 中间三栏内容区的container设置clearfix的class样式
++ 增加这个clearfix只是为了页脚清除了浮动，中间三栏内容区的container设置clearfix的class样式
 ```
 .clearfix:after {  /*设置父元素高度自适应*/
     content: "";
@@ -1061,14 +1062,14 @@ main{
     visibility: hidden;
 }
 ```
-+ midContainer为只包含middle的父元素。设置左中右三个容器都左浮动，但是左右边栏的margin-left不一样，中间的最内层元素设置左右margin，为边栏腾出空间。
++ middle必须放在left和right之前
++ 中间栏的容器设置向左浮动和宽度width百分百，设置左右margin值即可。
++ 左边栏向左浮动，margin-left为-100%，右边栏也向左浮动，margin-left为负的边栏的宽度。（这里父容器没有设置padding，所以边栏不用设置相对定位
 ```
-#midContainer {
-    width: 100%;  /*自适应窗口大小*/
-    float: left;
-}
 #middle {
     margin: 0 150px; /*为左右栏腾出空间*/
+    width:100%;
+    float:left;
 }
 #left {
     float: left;
@@ -1081,7 +1082,9 @@ main{
     margin-left: -150px
 }
 ```
-+ 页眉页脚和中间三栏的大容器，都设置一个warp的class样式，三个都设置`margin:0 auto;`
+#### 三栏布局：左右浮动+中间静态布局
++ middle必须放在left和right之后
++ 左边栏向左浮动，右边栏向右浮动，设置各自的width, middle设置左右margin值。
 ---
 ## rem和em
 + rem是基于html元素的字体（font-size)大小来决定
