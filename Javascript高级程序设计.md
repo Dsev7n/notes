@@ -2248,7 +2248,43 @@ setTimeout(function()) {
     //在此添加事件处理程序
 }, 0);
 ```
+##### jquery $(document).ready方法
++ 这个方法与原生的DOMContentLoaded对应，当DOM树加载完毕时发生ready事件，由于该事件在文档就绪后发生，因此把所有其他的jQuery事件和函数都置于该事件中是非常好的做法。
+```
+$(document).ready(function(){
+    $("button").click(function(){
+        $("p").slideToggle();
+    });
+});
+```
+##### jquery的$(this)
+> 参考链接：https://www.cnblogs.com/diantao/p/4514238.html
 
++ this，表示当前的上下文对象是一个html对象，可以调用html对象所拥有的属性和方法。
++ $(this)是一个JQuery对象,代表的上下文对象是一个jquery的上下文对象，可以调用jquery的方法和属性值。
++ query对象$(this)[0]等同于JS里的元素this，这里的this是一样的，相信你应该看出来了，JS里的元素只要包上$()就是jquery对象了，而jquery的对象只要加上[0]或者.get(0)，就是js元素了。
++ $(this)是jquery对象，this就是简单指当前元素。jquery对象不能直接指定元素的属性（ele.style），需要get（index）或者直接（index）取得对象中元素才行
+```
+$("#textbox").hover(
+     function() {
+              this.title = "Test";
+     },
+    fucntion() {
+              this.title = "OK”;
+    }
+);
+```
+这里的this其实是一个Html元素(textbox)，textbox有text属性，所以这样写是完全没有什么问题的。但是如果将this换成$(this)就报错了。jQuery对象沒有title 属性，因此这样写是错误的。正确的代码：
+```
+$("#textbox").hover(
+     function() {
+          $(this).attr(’title’, ‘Test’);
+     },
+     function() {
+          $(this).attr(’title’, ‘OK’);
+     }
+);
+```
 ## 13.5 内存和性能
 + 在JS中，添加到页面上的事件处理程序数量将直接关系到页面的整体运行性能。原因：1.每个函数都是对象，都会占用内存；内存中的对象越多，性能就越差。2. 必须事先制定所有处理程而导致的DOM访问次数，会延迟整个页面的交互就绪时间。
 
