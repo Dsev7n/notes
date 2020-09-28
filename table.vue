@@ -72,7 +72,6 @@
       :height="600"
     ></v-table> -->
     <div class="fixed-col">
-      <!-- <div class="row1">院校名称</div> -->
       <template v-if="tab=='院校'">
         <div class="row2" v-for="(item, index) in schoolHeader" :key="index">{{ item }}</div>
       </template>
